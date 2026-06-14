@@ -450,15 +450,28 @@ function enterFP(s){if(isFP)return;fpT=s;fpSP=camera.position.clone();fpST=contr
 function exitFP(){if(!isFP)return;isFP=false;fpT=null;fpHud.classList.remove('show');document.body.classList.remove('fp-mode');controls.enabled=true;controls.minDistance=3;controls.maxDistance=300;if(fpSP){camera.position.copy(fpSP);controls.target.copy(fpST);controls.update()}}
 fpExitBtn?.addEventListener('click',()=>{exitFP();infoPanel.classList.remove('visible')});
 
+// ========== 修改：为地球增加跳转按钮 ==========
 function showInfoPanel(data){
     const icon=data.isAlien?'👽':(data.isSatellite?'🛰':'🪐');
     panelTitle.textContent=`${icon} ${data.name.replace(/[⭐🌌🌀🌠🌙☀️🪐👽🛰]/g,'').trim()}`;
     const s=planetSystems.find(x=>x.def.name===data.name);let fpH='';
     if(s&&!data.isSatellite&&!data.isAlien){const a=isFP&&fpT===s;fpH=`<button id="fp-btn" class="${a?'active':''}" style="width:100%;padding:10px 0;border:1px solid ${a?'rgba(255,80,80,0.3)':'rgba(100,180,255,0.25)'};background:${a?'rgba(255,60,60,0.15)':'rgba(60,120,255,0.1)'};color:${a?'#ff8877':'#88ccff'};border-radius:10px;font-size:.8rem;cursor:pointer;pointer-events:auto;font-family:inherit;margin-top:4px;">${a?'🛸 退出第一视角':'🚀 第一视角'}</button>`}
-    panelBody.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;"><div class="planet-icon" style="background:${data.color};width:30px;height:30px;"></div><span style="font-size:.8rem;color:#bcc8dd;">${data.type||''}</span></div><div class="info-row"><span class="label">直径</span><span class="value">${data.diameter||'—'}</span></div><div class="info-row"><span class="label">距离</span><span class="value">${data.distance||'—'}</span></div>${data.temperature?`<div class="info-row"><span class="label">温度</span><span class="value">${data.temperature}</span></div>`:''}${data.moons?`<div class="info-row"><span class="label">卫星</span><span class="value">${data.moons}</span></div>`:''}<div class="info-desc">${data.desc||''}</div>${fpH}`;
+    // 地球专用跳转按钮
+    let earthJumpBtn = '';
+    if(data.name === '地球') {
+        earthJumpBtn = `<button id="goto-earth-btn" style="width:100%;margin-top:8px;padding:10px 0;background:rgba(100,180,255,0.1);border:1px solid rgba(100,180,255,0.3);border-radius:10px;color:#88ccff;font-size:.8rem;cursor:pointer;pointer-events:auto;font-family:inherit;">🌍 前往地球版（节气/空间站）</button>`;
+    }
+    panelBody.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;"><div class="planet-icon" style="background:${data.color};width:30px;height:30px;"></div><span style="font-size:.8rem;color:#bcc8dd;">${data.type||''}</span></div><div class="info-row"><span class="label">直径</span><span class="value">${data.diameter||'—'}</span></div><div class="info-row"><span class="label">距离</span><span class="value">${data.distance||'—'}</span></div>${data.temperature?`<div class="info-row"><span class="label">温度</span><span class="value">${data.temperature}</span></div>`:''}${data.moons?`<div class="info-row"><span class="label">卫星</span><span class="value">${data.moons}</span></div>`:''}<div class="info-desc">${data.desc||''}</div>${fpH}${earthJumpBtn}`;
     infoPanel.classList.add('visible');
     const fb=document.getElementById('fp-btn');
     if(fb&&s){fb.onclick=e=>{e.stopPropagation();if(isFP&&fpT===s)exitFP();else{if(isFP)exitFP();enterFP(s)}showInfoPanel(data)}}
+    const earthBtn = document.getElementById('goto-earth-btn');
+    if(earthBtn) {
+        earthBtn.onclick = e => {
+            e.stopPropagation();
+            window.open('https://xiaociwei01.github.io/diyue/', '_blank');
+        };
+    }
 }
 
 let tS=1,iP=false,vT=0;
@@ -539,7 +552,7 @@ animate();
 window.onresize=()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)};
 window.addEventListener('keydown',e=>{switch(e.key.toLowerCase()){case'r':camera.position.set(20,25,40);controls.target.set(0,1,0);controls.update();break;case'f':camera.position.set(0,95,2);controls.target.set(0,0,0);controls.update();break;case' ':e.preventDefault();iP?btnPlay.click():btnPause.click();break;case't':btnTour.click();break;case'a':btnAlien.click();break}if(e.key==='Escape'&&isFP){exitFP();infoPanel.classList.remove('visible')}});
 camera.position.set(20,25,40);controls.update();
-console.log('🌌 3D 太阳系 · 冥王星纹理+10倍半径版 已启动');
+console.log('🌌 3D 太阳系 · 冥王星纹理+10倍半径版+地球跳转 已启动');
 </script>
 </body>
 </html>
