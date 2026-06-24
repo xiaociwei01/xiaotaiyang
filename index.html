@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>3D 太阳系</title>
+    <title>3D 太阳系 · 终极真实版</title>
     <style>
         /* ========== 完整样式，与你之前的版本完全一致 ========== */
         :root {
@@ -181,7 +181,7 @@
 <div id="loading-overlay"><div class="loader-icon">🌌</div><div class="loader-title">太阳系加载中</div><div class="loader-bar-wrap"><div class="loader-bar" id="loader-bar"></div></div><div class="loader-sub" id="loader-sub">初始化 3D 场景...</div></div>
 
 <div id="title-bar">
-<h1>🌌 3D 太阳系</h1>
+<h1>🌌 3D 太阳系 · 真实版</h1>
 <span class="hint">🖱 拖拽 · 滚轮缩放 · 点击详情</span>
 <div class="top-btns">
 <button id="btn-lang">🌐 EN</button>
@@ -368,12 +368,12 @@ function createPlutoTexture(){
 }
 
 // ========== 太阳 ==========
-const sun=new THREE.Mesh(new THREE.SphereGeometry(2.5,96,96),new THREE.MeshBasicMaterial({color:'#fffef0'}));
+const sun=new THREE.Mesh(new THREE.SphereGeometry(5,96,96),new THREE.MeshBasicMaterial({color:'#fffef0'}));
 sun.name='太阳';sun.userData={name:'太阳',type:'G型主序星',diameter:'1,392,700 km',distance:'中心',temperature:'表面 5,500°C / 核心 1,500万°C',moons:'8颗行星',desc:'太阳是太阳系的中心天体，一颗黄矮星。包含了太阳系99.86%的质量。',color:'#ffb833'};scene.add(sun);
 loadTex('太阳').then(t=>{if(t){sun.material.map=t;sun.material.color.set('#ffffff');sun.material.needsUpdate=true}});
 
 function mkGlow(c,s,o){const cv=document.createElement('canvas');cv.width=256;cv.height=256;const ctx=cv.getContext('2d'),g=ctx.createRadialGradient(128,128,0,128,128,128);g.addColorStop(0,c);g.addColorStop(.15,c);g.addColorStop(.4,'rgba(255,180,40,0.25)');g.addColorStop(.7,'rgba(255,80,10,0.05)');g.addColorStop(1,'rgba(255,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,256,256);const tex=new THREE.CanvasTexture(cv),mat=new THREE.SpriteMaterial({map:tex,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:o}),sp=new THREE.Sprite(mat);sp.userData={isGlow:true};sp.scale.set(s,s,1);return sp}
-[[8,.9],[11,.55],[15,.3]].forEach(([s,o])=>sun.add(mkGlow('#fffef0',s,o)));
+[[16,.9],[22,.55],[30,.3]].forEach(([s,o])=>sun.add(mkGlow('#fffef0',s,o)));
 
 // ========== 太阳耀斑 ==========
 const FC=800,fP=new Float32Array(FC*3),fV=new Float32Array(FC*3),fL=new Float32Array(FC);for(let i=0;i<FC;i++)resetF(i);
@@ -420,7 +420,7 @@ for(const def of planetDefs){
     else if(['地球','火星','天王星','海王星'].includes(def.name)){m.add(new THREE.Mesh(new THREE.SphereGeometry(br*1.06,32,32),new THREE.MeshBasicMaterial({color:def.name==='火星'?'#ff8866':def.name==='地球'?'#88ccff':'#ccaa88',transparent:true,opacity:.12,side:THREE.BackSide})))}
     if(def.name==='土星'){const t=new THREE.TextureLoader().load('2k_saturn_ring_alpha.png');t.wrapS=THREE.RepeatWrapping;t.wrapT=THREE.ClampToEdgeWrapping;t.repeat.set(4,1);const r=new THREE.Mesh(new THREE.RingGeometry(def.ringInner,def.ringOuter,128),new THREE.MeshStandardMaterial({map:t,side:THREE.DoubleSide,transparent:true,opacity:.75,roughness:.4,metalness:.1,depthWrite:true}));r.rotation.x=Math.PI/2.2;r.rotation.z=.2;m.add(r);const o=new THREE.Mesh(new THREE.RingGeometry(def.ringOuter+.15,def.ringOuter+.45,128),new THREE.MeshStandardMaterial({color:0xccaa88,side:THREE.DoubleSide,transparent:true,opacity:.25,depthWrite:false}));o.rotation.x=Math.PI/2.2;m.add(o)}
     const pts=[];for(let i=0;i<=96;i++){const a=i/96*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*def.orbitRadius,0,Math.sin(a)*def.orbitRadius))}
-    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:'#88ccff',transparent:true,opacity:.0.2})));
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:'#88ccff',transparent:true,opacity:.5})));
     const fd=new THREE.Mesh(new THREE.SphereGeometry(.08,8,8),new THREE.MeshBasicMaterial({color:'#66ccff'}));fd.userData={isFlowDot:true};scene.add(fd);
     const gv=new THREE.Mesh(new THREE.RingGeometry(def.radius*2.5,def.radius*3,32),new THREE.MeshBasicMaterial({color:def.color,transparent:true,opacity:.08,side:THREE.DoubleSide,depthWrite:false}));gv.rotation.x=-Math.PI/2;gv.position.set(def.orbitRadius,0,0);scene.add(gv);
     const sd={def,group:g,mesh:m,startAngle:sa,satellites:[],flowDot:fd,flowAngle:Math.random()*Math.PI*2,gravMesh:gv};
