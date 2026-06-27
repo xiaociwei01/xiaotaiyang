@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>3D 太阳系</title>
+    <title>3D 太阳系 · 真实增强版</title>
     <style>
         /* ========== 样式与之前一致，精简保留 ========== */
         :root {
@@ -172,7 +172,7 @@
 <div id="loading-overlay"><div class="loader-icon">🌌</div><div class="loader-title">真实太阳系加载中</div><div class="loader-bar-wrap"><div class="loader-bar" id="loader-bar"></div></div><div class="loader-sub" id="loader-sub">初始化 3D 场景...</div></div>
 
 <div id="title-bar">
-<h1>🌌 真实太阳系</h1>
+<h1>🌌 真实太阳系 · 增强版</h1>
 <span class="hint">🖱 拖拽 · 滚轮缩放 · 点击详情</span>
 <div class="top-btns">
 <button id="btn-lang">🌐 EN</button>
@@ -184,7 +184,7 @@
 <div id="info-card">
 <div class="card-title">✨ 小刺猬的宇宙工坊 ✨</div>
 <div class="card-content">
-<p>🪐 3D太阳系</p>
+<p>🪐 真实轴倾斜 · 大气辉光 · 闪烁星空</p>
 <p>🐳 作者：小刺猬</p>
 <p>📧 WeChatID：As08_0831 QQnumber：2586279833</p>
 <p style="margin-top:5px;font-size:.65rem;">🌠 鼠标/手指拖拽旋转 · 滚轮缩放</p>
@@ -275,8 +275,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // ========== 国际化 ==========
 const i18n = {
-    zh: { title:'🌌 真实太阳系', hint:'🖱 拖拽 · 滚轮缩放 · 点击详情', tour:'🚀 漫游', alien:'👽 寻星', ctrl:'⚙️', speed:'速度', pause:'⏸', play:'▶', f2:'2×', f10:'10×', f50:'50×', reset:'🔄 重置所有参数', perf:'性能模式', gravity:'重力井光环', orbitflow:'轨道流光', flare:'太阳耀斑', found:'找到', event:'✨ 天文事件', dataCard:'📍 实时数据', clickHint:'点击星球查看' },
-    en: { title:'🌌 Real Solar System', hint:'🖱 Drag · Scroll · Click for details', tour:'🚀 Tour', alien:'👽 Hunt', ctrl:'⚙️', speed:'Speed', pause:'⏸', play:'▶', f2:'2×', f10:'10×', f50:'50×', reset:'🔄 Reset All', perf:'Performance', gravity:'Gravity Wells', orbitflow:'Orbit Flow', flare:'Solar Flare', found:'Found', event:'✨ Astronomy Event', dataCard:'📍 Live Data', clickHint:'Click a planet' }
+    zh: { title:'🌌 真实太阳系 · 增强版', hint:'🖱 拖拽 · 滚轮缩放 · 点击详情', tour:'🚀 漫游', alien:'👽 寻星', ctrl:'⚙️', speed:'速度', pause:'⏸', play:'▶', f2:'2×', f10:'10×', f50:'50×', reset:'🔄 重置所有参数', perf:'性能模式', gravity:'重力井光环', orbitflow:'轨道流光', flare:'太阳耀斑', found:'找到', event:'✨ 天文事件', dataCard:'📍 实时数据', clickHint:'点击星球查看' },
+    en: { title:'🌌 Real Solar System · Enhanced', hint:'🖱 Drag · Scroll · Click for details', tour:'🚀 Tour', alien:'👽 Hunt', ctrl:'⚙️', speed:'Speed', pause:'⏸', play:'▶', f2:'2×', f10:'10×', f50:'50×', reset:'🔄 Reset All', perf:'Performance', gravity:'Gravity Wells', orbitflow:'Orbit Flow', flare:'Solar Flare', found:'Found', event:'✨ Astronomy Event', dataCard:'📍 Live Data', clickHint:'Click a planet' }
 };
 let lang='zh';
 
@@ -376,13 +376,13 @@ function createPlutoTexture(){
     tex.colorSpace=THREE.SRGBColorSpace;tex.minFilter=THREE.LinearMipmapLinearFilter;tex.magFilter=THREE.LinearFilter;tex.generateMipmaps=true;return tex;
 }
 
-// ========== 太阳（实体缩小到1.5，光晕保持巨大） ==========
+// ========== 太阳（实体缩小到2.8，光晕保持巨大） ==========
 const sun=new THREE.Mesh(new THREE.SphereGeometry(1.5,96,96),new THREE.MeshBasicMaterial({color:'#fffef0'}));
 sun.name='太阳';sun.userData={name:'太阳',type:'G型主序星',diameter:'1,392,700 km',distance:'中心',temperature:'表面 5,500°C / 核心 1,500万°C',moons:'8颗行星',desc:'太阳是太阳系的中心天体，一颗黄矮星。包含了太阳系99.86%的质量。',color:'#ffb833'};scene.add(sun);
 loadTex('太阳').then(t=>{if(t){sun.material.map=t;sun.material.color.set('#ffffff');sun.material.needsUpdate=true}});
 
 function mkGlow(c,s,o){const cv=document.createElement('canvas');cv.width=256;cv.height=256;const ctx=cv.getContext('2d'),g=ctx.createRadialGradient(128,128,0,128,128,128);g.addColorStop(0,c);g.addColorStop(.15,c);g.addColorStop(.4,'rgba(255,180,40,0.25)');g.addColorStop(.7,'rgba(255,80,10,0.05)');g.addColorStop(1,'rgba(255,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,256,256);const tex=new THREE.CanvasTexture(cv),mat=new THREE.SpriteMaterial({map:tex,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:o}),sp=new THREE.Sprite(mat);sp.userData={isGlow:true};sp.scale.set(s,s,1);return sp}
-[[10,.9],[18,.55],[28,.3]].forEach(([s,o])=>sun.add(mkGlow('#fffef0',s,o)));
+[[6,.9],[12,.55],[20,.3]].forEach(([s,o])=>sun.add(mkGlow('#fffef0',s,o)));
 
 // ========== 耀斑 ==========
 const FC=800,fP=new Float32Array(FC*3),fV=new Float32Array(FC*3),fL=new Float32Array(FC);
@@ -444,7 +444,29 @@ for(const def of planetDefs){
     }
     if(def.name==='金星'){const t=new THREE.TextureLoader().load('2k_venus_atmosphere.jpg');t.colorSpace=THREE.SRGBColorSpace;m.add(new THREE.Mesh(new THREE.SphereGeometry(br*1.12,64,64),new THREE.MeshStandardMaterial({map:t,color:0xffddaa,transparent:true,opacity:.45,side:THREE.BackSide,blending:THREE.AdditiveBlending})))}
     else if(['火星','天王星','海王星'].includes(def.name)){m.add(new THREE.Mesh(new THREE.SphereGeometry(br*1.06,32,32),new THREE.MeshBasicMaterial({color:def.name==='火星'?'#ff8866':def.name==='天王星'?'#88ccff':'#4466ff',transparent:true,opacity:.12,side:THREE.BackSide})))}
-    if(def.name==='土星'){const t=new THREE.TextureLoader().load('2k_saturn_ring_alpha.png');t.wrapS=THREE.RepeatWrapping;t.wrapT=THREE.ClampToEdgeWrapping;t.repeat.set(4,1);const r=new THREE.Mesh(new THREE.RingGeometry(def.ringInner,def.ringOuter,128),new THREE.MeshStandardMaterial({map:t,side:THREE.DoubleSide,transparent:true,opacity:.75,roughness:.4,metalness:.1,depthWrite:true}));r.rotation.x=Math.PI/2.2;r.rotation.z=.2;m.add(r);const o=new THREE.Mesh(new THREE.RingGeometry(def.ringOuter+.15,def.ringOuter+.45,128),new THREE.MeshStandardMaterial({color:0xccaa88,side:THREE.DoubleSide,transparent:true,opacity:.25,depthWrite:false}));o.rotation.x=Math.PI/2.2;m.add(o)}
+    // ===== 土星环：只保留带纹理的主环，删除外圈半透明晕环 =====
+    if(def.name==='土星'){
+        const t=new THREE.TextureLoader().load('2k_saturn_ring_alpha.png');
+        t.wrapS=THREE.RepeatWrapping;
+        t.wrapT=THREE.ClampToEdgeWrapping;
+        t.repeat.set(4,1);
+        const r=new THREE.Mesh(
+            new THREE.RingGeometry(def.ringInner, def.ringOuter, 128),
+            new THREE.MeshStandardMaterial({
+                map:t,
+                side:THREE.DoubleSide,
+                transparent:true,
+                opacity:.75,
+                roughness:.4,
+                metalness:.1,
+                depthWrite:true
+            })
+        );
+        r.rotation.x=Math.PI/2.2;
+        r.rotation.z=.2;
+        m.add(r);
+        // 外圈半透明晕环已删除（只保留主环）
+    }
     // 轨道线（调暗：颜色 #446688，透明度 0.15）
     const pts=[];for(let i=0;i<=96;i++){const a=i/96*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*def.orbitRadius,0,Math.sin(a)*def.orbitRadius))}
     scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:'#446688',transparent:true,opacity:0.15})));
@@ -651,7 +673,7 @@ animate();
 window.onresize=()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)};
 window.addEventListener('keydown',e=>{switch(e.key.toLowerCase()){case'r':camera.position.set(20,25,40);controls.target.set(0,1,0);controls.update();break;case'f':camera.position.set(0,95,2);controls.target.set(0,0,0);controls.update();break;case' ':e.preventDefault();iP?btnPlay.click():btnPause.click();break;case't':btnTour.click();break;case'a':btnAlien.click();break}if(e.key==='Escape'&&isFP){exitFP();infoPanel.classList.remove('visible')}});
 camera.position.set(20,25,40);controls.update();
-console.log('🌌 真实太阳系 · 轴倾斜/大气辉光/闪烁星空 已启动');
+console.log('🌌 真实太阳系 · 轴倾斜/大气辉光/闪烁星空/土星环单层 已启动');
 </script>
 </body>
 </html>
